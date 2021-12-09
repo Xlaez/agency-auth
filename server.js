@@ -21,8 +21,10 @@ require('./app/routes/user.routes')(app);
 const db = require("./app/models");
 const Role = db.role;
 
+const connectionString = process.env.MONGO_URL || `mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`
+
 db.mongoose
-    .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
+    .connect(connectionString, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
