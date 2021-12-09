@@ -76,7 +76,7 @@ function initial() {
 }
 
 app.get("/", (req, res) => {
-    res.json({ message: "Welcome to usenmfon application" });
+    res.json({ message: "Welcome to futurelabs task manager application" });
 });
 
 const PORT = process.env.PORT || 8080;
