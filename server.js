@@ -21,7 +21,9 @@ require('./app/routes/user.routes')(app);
 const db = require("./app/models");
 const Role = db.role;
 
-const connectionString = process.env.MONGO_URL || `mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`
+//const connectionString = process.env.MONGO_URL || `mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`
+
+const connectionString  = 'mongodb+srv://usenmfon:Usen1000@cluster0.lukdq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
 db.mongoose
     .connect(connectionString, {
