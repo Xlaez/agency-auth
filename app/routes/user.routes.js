@@ -10,17 +10,25 @@ module.exports = function(app) {
         next();
     });
 
-    app.get("/api/test/all", controller.allAccess);
+    app.get("/api/all", controller.allAccess);
 
-    app.get("/api/test/user", [authJwt.verifyToken], controller.userBoard);
+    app.get("/api/user", [authJwt.verifyToken], controller.userBoard);
 
     app.get(
-        "/api/test/mod", [authJwt.verifyToken, authJwt.isModerator],
+        "/api/mod", [authJwt.verifyToken, authJwt.isModerator],
         controller.moderatorBoard
     );
 
     app.get(
-        "/api/test/admin", [authJwt.verifyToken, authJwt.isAdmin],
+        "/api/admin", [authJwt.verifyToken, authJwt.isAdmin],
         controller.adminBoard
     );
+
+    app.get("/api/all/user", controller.getUser)
+
+    app.get("/api/user/:id", controller.getSingleUser);
+
+    app.post("/api/user", controller.createUser);
+
+    app.put("/api/user/:id", controller.editUser);
 };

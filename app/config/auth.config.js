@@ -1,3 +1,3 @@
 module.exports = {
-    secret: "usenmfon-secret-key"
+    secret: "futurelabs-secret-key"
 }
