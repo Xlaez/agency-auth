@@ -9,6 +9,7 @@ const User = mongoose.model(
         password: { type: String, required: [true, 'enter a password '] },
         phoneNumber: { type: String },
         primaryTeam: { type: String },
+        dateOfBirth: { type: String },
         resumptionDate: { type: String },
         role: { type: String },
         team: { type: String },
