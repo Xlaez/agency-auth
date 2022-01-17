@@ -1,27 +1,12 @@
 const User = require("../models/user.model");
 
-exports.allAccess = (req, res) => {
-    res.status(200).send("Public Content.");
-};
 
-exports.userBoard = (req, res) => {
-    res.status(200).send("User Content.");
-};
-
-exports.adminBoard = (req, res) => {
-    res.status(200).send("Admin Content.");
-};
-
-exports.moderatorBoard = (req, res) => {
-    res.status(200).send("Moderator Content.");
-};
-
-exports.getUser = async(req, res) => {
+const getUser = async(req, res) => {
     const user = await User.find();
     res.status(200).json({ success: true, data: user });
 };
 
-exports.getSingleUser = async(req, res) => {
+const getSingleUser = async(req, res) => {
     const { id } = req.params;
 
     const user = await User.findOne({ _id: id });
@@ -29,7 +14,7 @@ exports.getSingleUser = async(req, res) => {
 };
 
 
-exports.createUser = (req, res) => {
+const createUser = (req, res) => {
     const body = req.body;
     console.log(body);
 
@@ -46,7 +31,7 @@ exports.createUser = (req, res) => {
     res.status(201).json({ success: true, user: user });
 };
 
-exports.editUser = async(req, res) => {
+const editUser = async(req, res) => {
     const { id } = req.params;
     const body = req.body;
 
@@ -57,3 +42,10 @@ exports.editUser = async(req, res) => {
 
     res.status(200).json({ success: true, data: user });
 };
+
+module.exports = {
+    getUser,
+    getSingleUser,
+    createUser,
+    editUser,
+}
