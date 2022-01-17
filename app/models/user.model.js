@@ -21,4 +21,16 @@ const User = mongoose.model(
     })
 )
 
+const Resource = mongoose.model(
+    "Resource",
+    new mongoose.Schema({
+        user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+        title: { type: String},
+        
+    },
+    {
+        timestamps: true,
+    })
+)
+
 module.exports = User

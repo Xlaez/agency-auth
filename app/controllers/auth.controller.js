@@ -1,78 +1,80 @@
+const User = require('../models/user.model')
 const config = require("../config/auth.config");
-const db = require("../models");
-const User = db.user;
-const Role = db.role;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
-exports.signup = (req, res) => {
-    const user = new User({
-        username: req.body.username,
-        email: req.body.email,
-        fullname: req.body.fullname,
-        password: bcrypt.hashSync(req.body.password, 8)
-    });
+getToken = (user) => {
+    return jwt.sign({ id: user._id, username: user.username}, config.secret, {
+        expiresIn: 86400
+    })
+}
 
-    user.save().catch(e => {
-
-        res.status(400).send({ success: false, data: e })
+const signup = async(req, res) => {
+    const newUser = await User.findOne({
+        email: req.body.email
     })
 
-    var token = jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: 86400 // 24 hours
-    });
+    if(newUser){
+        res.status(401).send({message: 'user already exists'})
+        return
+    }
+
+    const user = new User({
+        email: req.body.email,
+        username: req.body.username,
+        password: bcrypt.hashSync(req.body.password, 8)
+    })
+
+    try{
+        user.save()
+
+        var token = getToken(user)
+
+        res.status(200).send({
+            id: user._id,
+            email: user.email,
+            username: user.username,
+            accessToken: token
+        })
+    }
+    catch(e){
+        res.status(400).send({success: false, data: e})
+    }
+};
+
+const signin = async(req, res) => {
+
+    const currentUser = await User.findOne({
+        email: req.body.email
+    })
+
+    if(!currentUser){
+        return res.status(404).send({ message: 'User does not exist'})
+    }
+
+    var passwordIsValid = bcrypt.compareSync(
+        req.body.password, currentUser.password
+    )
+
+    if(!passwordIsValid){
+        return res.status(401).send({
+            accessToken: null,
+            message: 'Invalid password'
+        })
+    }
+
+    var token = getToken(currentUser)
 
     res.status(200).send({
-        id: user._id,
-        username: user.username,
-        email: user.email,
+        id: currentUser._id,
+        username: currentUser.username,
+        email: currentUser.email,
         accessToken: token
-    });
-};
+    })
+}
 
-exports.signin = (req, res) => {
-    User.findOne({
-            username: req.body.username
-        })
-        .populate("roles", "-__v")
-        .exec((err, user) => {
-            if (err) {
-                res.status(500).send({ message: err });
-                return;
-            }
-
-            if (!user) {
-                return res.status(404).send({ message: "User Not found." });
-            }
-
-            var passwordIsValid = bcrypt.compareSync(
-                req.body.password,
-                user.password
-            );
-
-            if (!passwordIsValid) {
-                return res.status(401).send({
-                    accessToken: null,
-                    message: "Invalid Password!"
-                });
-            }
-
-            var token = jwt.sign({ id: user.id }, config.secret, {
-                expiresIn: 86400 // 24 hours
-            });
-
-            var authorities = [];
-
-            for (let i = 0; i < user.roles.length; i++) {
-                authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
-            }
-            res.status(200).send({
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                roles: authorities,
-                accessToken: token
-            });
-        });
-};
+module.exports = {
+    signup,
+    signin
+}
