@@ -2,7 +2,13 @@ const {Resource} = require("../models/user.model");
 
 const getResources = async(req, res) => {
     const resources = await Resource.find();
-    res.status(200).json({ success: true, data: resources})
+    res.status(200).json({ success: true, data: resources});
+}
+
+const getUserResources = async(req, res) => {
+
+    const resources = await Resource.find({ user:  req.userId});
+    res.status(200).json({ success: true, data: resources});
 }
 
 const getSingleResource = async(req, res) => {
@@ -31,12 +37,21 @@ const createResource = (req, res) => {
 
 const deleteResource = async(req, res) => {
     const {id} = req.params;
-    
-    await Resource.findByIdAndDelete({ _id: id})
-        .catch(e => {
+    const currentUser = req.userId;
+
+    const resource = await Resource.findOne({ _id: id}).catch(e => {
         console.log(e)
         return res.status(400).json({ success: false, message: 'failed to delete resource'})
     })
+
+    if(!resource){
+        return res.status(404).json({ success: false, message: 'resource not found'})
+    }
+
+    if(currentUser == resource.user){
+        resource.delete()
+    }
+    
     res.status(200).json({ success: true, message: 'resource deleted successfully'})
 };
 
@@ -45,4 +60,5 @@ module.exports = {
     getResources,
     getSingleResource,
     deleteResource,
+    getUserResources,
 }

@@ -25,7 +25,10 @@ const Resource = mongoose.model(
     "Resource",
     new mongoose.Schema({
         user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-        title: { type: String},   
+        title: { type: String},
+        url: { type: String },
+        description: { type: String },
+        type: { type: String },
     },
     {
         timestamps: true,
