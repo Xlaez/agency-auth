@@ -25,7 +25,7 @@ const Resource = mongoose.model(
     "Resource",
     new mongoose.Schema({
         user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-        title: { type: String},
+        title: { type: String },
         url: { type: String },
         description: { type: String },
         type: { type: String },
@@ -35,7 +35,16 @@ const Resource = mongoose.model(
     })
 )
 
+const Category = mongoose.model(
+    "Category",
+    new mongoose.Schema({
+        resource: {type: mongoose.Schema.Types.ObjectId, ref: 'Resource'},
+        title: { type: String }
+    })
+)
+
 module.exports = {
     User,
-    Resource
+    Resource,
+    Category,
 }
