@@ -12,6 +12,7 @@ const app = express();
 const user = require('./app/routes/user.route')
 const auth = require('./app/routes/auth.route')
 const resource = require('./app/routes/resource.route')
+const category = require('./app/routes/category.route')
 
 var corsOptions = {
     origin: "*",
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 app.use('/auth', auth)
 app.use('/', [authJwt.verifyToken] , user)
 app.use('/resource', resource)
+app.use('/category', category)
 
 
 
