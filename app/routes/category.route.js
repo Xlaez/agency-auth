@@ -11,3 +11,5 @@ const {
 router.route('/').get(getCategories)
 router.route('/create').post(createCategory)
 router.route('/:id').put(editCategory).delete(deleteCategory)
+
+module.exports = router
